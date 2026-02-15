@@ -10,6 +10,17 @@ import Title from "./pages/Title";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import Thanks from "./pages/Thanks";
+import { Toaster } from "react-hot-toast";
+
+export default function App() {
+  return (
+    <>
+      <Toaster position="top-center" />
+      {/* reszta Twojej appki */}
+    </>
+  );
+}
+
 
 
 
