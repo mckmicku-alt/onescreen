@@ -10,14 +10,16 @@ import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
-  // UWAGA: footer = sentinel na absolutnym końcu (po <Footer />)
+  // sekcje do przewijania w dół
   const order = useMemo(
-    () => ["top", "intro", "problem", "how", "recommend", "beta", "footer"],
+    () => ["top", "intro", "problem", "how", "recommend", "beta"],
     []
   );
 
   const [activeId, setActiveId] = useState<string>("top");
+  const [isFooter, setIsFooter] = useState(false);
 
+  // 1) aktywna sekcja (IntersectionObserver) – tylko do przewijania “w dół”
   useEffect(() => {
     const elements = order
       .map((id) => document.getElementById(id))
@@ -27,16 +29,6 @@ const Index = () => {
 
     const io = new IntersectionObserver(
       (entries) => {
-        // 1) jeśli footer jest widoczny choć trochę -> zawsze ustaw footer
-        const footerEntry = entries.find(
-          (e) => e.target.id === "footer" && e.isIntersecting
-        );
-        if (footerEntry) {
-          setActiveId("footer");
-          return;
-        }
-
-        // 2) inaczej wybierz najbardziej widoczny element
         const visible = entries
           .filter((e) => e.isIntersecting)
           .sort(
@@ -46,14 +38,35 @@ const Index = () => {
         if (visible?.target?.id) setActiveId(visible.target.id);
       },
       {
-        threshold: [0.15, 0.3, 0.45, 0.6],
-        rootMargin: "-5% 0px -45% 0px",
+        threshold: [0.2, 0.35, 0.5, 0.65],
+        rootMargin: "-5% 0px -55% 0px",
       }
     );
 
     elements.forEach((el) => io.observe(el));
     return () => io.disconnect();
   }, [order]);
+
+  // 2) WYKRYWANIE DOŁU – pewne na 100% (scroll)
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY || 0;
+      const vh = window.innerHeight || 0;
+      const docH = document.documentElement.scrollHeight || 0;
+
+      // gdy jesteś blisko końca (80px) -> przełącz na tryb “footer”
+      const nearBottom = y + vh >= docH - 80;
+      setIsFooter(nearBottom);
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
 
   const nextId = useMemo(() => {
     const idx = order.indexOf(activeId);
@@ -72,9 +85,6 @@ const Index = () => {
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const isFooter = activeId === "footer";
-
-  // pozycja docka
   const bottomPos = "clamp(34px, 6vh, 78px)";
 
   return (
@@ -103,10 +113,7 @@ const Index = () => {
 
       <Footer />
 
-      {/* SENTINEL NA SAMYM KOŃCU STRONY */}
-      <div id="footer" style={{ height: 2 }} />
-
-      {/* JEDEN DOCK: normalnie dół, na końcu zamienia się w górę */}
+      {/* JEDEN DOCK: normalnie dół, na samym dole zmienia się w górę + label */}
       <div
         className="fixed left-1/2 -translate-x-1/2 z-[9999] flex flex-col items-center gap-3"
         style={{ bottom: bottomPos }}
