@@ -13,7 +13,7 @@ const CTASection = () => {
     const e = email.trim();
 
     if (!e) {
-      toast.error("Wpisz poprawny adres e-mail.", { position: "top-center" });
+      toast.error("Wpisz poprawny adres e‑mail.", { position: "top-center" });
       return;
     }
     if (!accepted) {
@@ -40,7 +40,7 @@ const CTASection = () => {
       }
 
       if (r.status === 409) {
-        toast.info("Ten adres e-mail jest już na naszej liście ✅", { position: "top-center" });
+        toast.info("Ten adres e‑mail jest już na naszej liście ✅", { position: "top-center" });
         return;
       }
 
@@ -55,19 +55,19 @@ const CTASection = () => {
   return (
     <section className="py-16">
       <div className="mx-auto max-w-3xl px-4 text-center">
-        {/* Nagłówek */}
-        <h2 className="text-5xl font-extrabold text-white">
+        {/* Filmowy nagłówek */}
+        <h2 className="text-5xl md:text-6xl font-extrabold uppercase tracking-tight text-white">
           Premiera wkrótce.
         </h2>
 
-        {/* Neonowy napis */}
-        <p className="mt-3 text-3xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500">
-          Dołącz do pierwszych 1000&nbsp;użytkowników.
+        {/* Neonowy gradient dopasowany do strony */}
+        <p className="mt-3 text-3xl md:text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-pink-500 to-red-500">
+          Dołącz do pierwszych 1000 użytkowników.
         </p>
 
-        {/* Dodatkowy opis */}
-        <p className="mt-2 text-muted-foreground">
-          Zostaw swój e-mail, a damy znać jako pierwsi.
+        {/* Tekst zapraszający do zapisu */}
+        <p className="mt-2 text-lg md:text-xl text-muted-foreground">
+          Zostaw e‑mail, jeśli jesteś zainteresowany!
         </p>
 
         <div className="mt-8 flex flex-col items-center gap-4">
