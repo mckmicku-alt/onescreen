@@ -10,6 +10,7 @@ const CTASection = () => {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState<"idle" | "ok" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState<string>("");
+  const [errorDetails, setErrorDetails] = useState<string>("");
 
   async function handleJoin() {
     if (!accepted) return;
@@ -17,6 +18,7 @@ const CTASection = () => {
     setLoading(true);
     setSubmitted("idle");
     setErrorMsg("");
+    setErrorDetails("");
 
     try {
       const r = await fetch("/api/subscribe", {
@@ -30,6 +32,7 @@ const CTASection = () => {
       if (!r.ok) {
         setSubmitted("error");
         setErrorMsg(data?.error || "Nie udało się zapisać. Spróbuj ponownie.");
+        setErrorDetails(typeof data?.details === "string" ? data.details : "");
         return;
       }
 
@@ -128,9 +131,15 @@ const CTASection = () => {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.98 }}
                   transition={{ duration: 0.35 }}
-                  className="mt-5 mx-auto max-w-xl rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-foreground"
+                  className="mt-5 mx-auto max-w-xl rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-foreground text-left"
                 >
-                  <span className="font-semibold">Ups.</span> {errorMsg}
+                  <div className="font-semibold mb-1">Ups.</div>
+                  <div>{errorMsg}</div>
+                  {errorDetails && (
+                    <pre className="mt-2 overflow-auto whitespace-pre-wrap text-xs opacity-80">
+                      {errorDetails}
+                    </pre>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
