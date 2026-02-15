@@ -10,7 +10,6 @@ import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
-  // kolejność slajdów w dół (footer wykrywamy scroll-em)
   const order = useMemo(
     () => ["top", "intro", "problem", "how", "recommend", "beta"],
     []
@@ -19,7 +18,16 @@ const Index = () => {
   const [isFooter, setIsFooter] = useState(false);
   const [eggOn, setEggOn] = useState(false);
 
-  // wykrycie dołu strony (pewne)
+  // Zawsze startuj na górze po odświeżeniu
+  useEffect(() => {
+    // natychmiast
+    window.scrollTo(0, 0);
+    // jeszcze raz po renderze (na wypadek restoration)
+    const t = window.setTimeout(() => window.scrollTo(0, 0), 0);
+    return () => window.clearTimeout(t);
+  }, []);
+
+  // wykrycie dołu strony
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY || 0;
@@ -37,7 +45,7 @@ const Index = () => {
     };
   }, []);
 
-  // Easter egg: Alt + X + D (bezpiecznie: wykrycie “jednoczesnego” trzymania)
+  // Easter egg: Alt + X + D (toggle)
   useEffect(() => {
     const pressed = new Set<string>();
 
@@ -60,9 +68,11 @@ const Index = () => {
     };
   }, []);
 
-  // deterministyczne “następna sekcja” po położeniu na ekranie
+  const resetEgg = () => setEggOn(false);
+
+  // deterministyczne “następna sekcja”
   const getCurrentSectionIndex = () => {
-    const offset = 96; // bezpieczny offset pod navbar / sticky
+    const offset = 96;
     const els = order
       .map((id) => document.getElementById(id))
       .filter(Boolean) as HTMLElement[];
@@ -85,6 +95,7 @@ const Index = () => {
   };
 
   const scrollNext = () => {
+    resetEgg();
     const idx = getCurrentSectionIndex();
     const nextIdx = Math.min(idx + 1, order.length - 1);
     const nextId = order[nextIdx];
@@ -93,6 +104,7 @@ const Index = () => {
   };
 
   const scrollTop = () => {
+    resetEgg();
     const el = document.getElementById("top");
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
@@ -134,7 +146,6 @@ const Index = () => {
         className="fixed left-1/2 -translate-x-1/2 z-[9999] flex flex-col items-center gap-2"
         style={{ bottom: bottomPos }}
       >
-        {/* napis tylko na dole, bez tła */}
         {isFooter && (
           <button
             type="button"
@@ -142,8 +153,7 @@ const Index = () => {
             className="text-sm md:text-[15px] tracking-tight transition-transform hover:scale-[1.02] active:scale-[0.99]"
             style={{
               color: "rgba(255,255,255,0.92)",
-              textShadow:
-                "0 0 18px rgba(120,170,255,0.26), 0 10px 40px rgba(0,0,0,0.35)",
+              textShadow: "0 0 18px rgba(120,170,255,0.26)",
               fontWeight: 500,
             }}
             aria-label="Wróć do strony głównej"
@@ -153,7 +163,6 @@ const Index = () => {
           </button>
         )}
 
-        {/* strzałka */}
         <button
           type="button"
           onClick={isFooter ? scrollTop : scrollNext}
