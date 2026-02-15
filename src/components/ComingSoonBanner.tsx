@@ -1,9 +1,4 @@
 const ComingSoonBanner = () => {
-  const scrollDown = () => {
-    const el = document.getElementById("hero");
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
   return (
     <section className="relative w-full">
       <div className="relative h-[100vh] min-h-[720px] w-full overflow-hidden bg-background">
@@ -38,7 +33,7 @@ const ComingSoonBanner = () => {
           }}
         />
 
-        {/* Top fade (pod nav) */}
+        {/* Top fade */}
         <div
           aria-hidden="true"
           className="absolute inset-x-0 top-0 z-[3] h-44"
@@ -48,7 +43,7 @@ const ComingSoonBanner = () => {
           }}
         />
 
-        {/* WOW FADE OUT — bardziej płynnie */}
+        {/* Bottom fade */}
         <div
           aria-hidden="true"
           className="absolute inset-x-0 bottom-0 z-[4] h-[48vh]"
@@ -58,7 +53,7 @@ const ComingSoonBanner = () => {
           }}
         />
 
-        {/* miękki “fog” (maska + blur) */}
+        {/* Soft fog blur */}
         <div
           aria-hidden="true"
           className="absolute inset-x-0 bottom-0 z-[5] h-[34vh] opacity-95"
@@ -73,27 +68,6 @@ const ComingSoonBanner = () => {
               "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.85) 35%, rgba(0,0,0,1) 100%)",
           }}
         />
-
-        {/* strzałka — responsywnie (żeby nie znikała na telefonie) */}
-        <button
-          type="button"
-          onClick={scrollDown}
-          aria-label="Przewiń do kolejnej sekcji"
-          className="absolute left-1/2 -translate-x-1/2 z-[10] transition-transform hover:scale-125 active:scale-110 opacity-95"
-          style={{
-            bottom: "clamp(18px, 4vh, 44px)",
-          }}
-        >
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M6 9l6 6 6-6"
-              stroke="white"
-              strokeWidth="2.7"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
       </div>
     </section>
   );
