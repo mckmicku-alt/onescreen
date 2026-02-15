@@ -43,29 +43,29 @@ const Index = () => {
       <main>
         <ComingSoonBanner />
 
-        {/* 1: Zapisy na betę */}
-        <div id="beta" />
-        <CTASection />
-        <ScrollArrow toId="hero" label="Przewiń do kolejnej sekcji" />
-
-        {/* 2: Hero */}
+        {/* 1) HERO */}
         <div id="hero" />
         <HeroSection />
-        <ScrollArrow toId="problem" label="Przewiń do kolejnej sekcji" />
+        <ScrollArrow toId="problem" label="Przewiń dalej" />
 
-        {/* 3: Problem */}
+        {/* 2) PROBLEM */}
         <div id="problem" />
         <ProblemSection />
-        <ScrollArrow toId="how" label="Przewiń do kolejnej sekcji" />
+        <ScrollArrow toId="how" label="Przewiń dalej" />
 
-        {/* 4: How it works */}
+        {/* 3) HOW */}
         <div id="how" />
         <HowItWorksSection />
-        <ScrollArrow toId="recommend" label="Przewiń do kolejnej sekcji" />
+        <ScrollArrow toId="recommend" label="Przewiń dalej" />
 
-        {/* 5: Recommend */}
+        {/* 4) RECOMMEND */}
         <div id="recommend" />
         <RecommendationSection />
+        <ScrollArrow toId="cta" label="Przewiń do zapisu na betę" />
+
+        {/* 5) CTA (DOŁĄCZ) NA DOLE */}
+        <div id="cta" />
+        <CTASection />
         <ScrollArrow toId="footer" label="Przewiń do stopki" />
       </main>
 
