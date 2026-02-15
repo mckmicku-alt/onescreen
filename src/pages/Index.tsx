@@ -19,13 +19,29 @@ const Index = () => {
   const [eggOn, setEggOn] = useState(false);
 
   // Zawsze startuj na górze po odświeżeniu
-  useEffect(() => {
-    // natychmiast
-    window.scrollTo(0, 0);
-    // jeszcze raz po renderze (na wypadek restoration)
-    const t = window.setTimeout(() => window.scrollTo(0, 0), 0);
-    return () => window.clearTimeout(t);
-  }, []);
+  // Easter egg: dokładna sekwencja Alt + X + D
+useEffect(() => {
+  let step = 0;
+
+  const onKeyDown = (e: KeyboardEvent) => {
+    const key = e.key.toLowerCase();
+
+    if (step === 0 && key === "alt") {
+      step = 1;
+    } else if (step === 1 && key === "x") {
+      step = 2;
+    } else if (step === 2 && key === "d") {
+      setEggOn(true);
+      step = 0;
+    } else {
+      step = 0;
+    }
+  };
+
+  window.addEventListener("keydown", onKeyDown);
+  return () => window.removeEventListener("keydown", onKeyDown);
+}, []);
+
 
   // wykrycie dołu strony
   useEffect(() => {
@@ -184,6 +200,7 @@ const Index = () => {
             <path
               d="M6 9l6 6 6-6"
               stroke="white"
+              strokeWidth="2.8"
               strokeWidth="2.8"
               strokeLinecap="round"
               strokeLinejoin="round"
