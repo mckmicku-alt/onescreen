@@ -1,91 +1,146 @@
-import { motion } from "framer-motion";
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
 
 const CTASection = () => {
   const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [accepted, setAccepted] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState<"idle" | "ok" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState<string>("");
+
+  async function handleJoin() {
+    if (!accepted) return;
 
     setLoading(true);
-
-    const formData = new FormData();
-    formData.append("EMAIL", email);
-    formData.append("locale", "en");
-    formData.append("html_type", "simple");
+    setSubmitted("idle");
+    setErrorMsg("");
 
     try {
-      await fetch(
-        "https://6a28c124.sibforms.com/serve/MUIFAPimLc05Jg9cgb23z5p-_sefOcx4-pebBJMpM85Zpeft8zgXgT2LbuHtvRcw9dDFkzLCfw0i-TfT0r75B1gkSMwQq-EhyRTsvRKQE5MuNcdbUQgzYr6Qml7Gn1AcVt6YPT0pAVZXSqQzy6xZepklUbLURl-KDCnnbEpJrJFHtWl3MQoqFCV7zOu1952e0nnslmszC_uAee-_PA==",
-        {
-          method: "POST",
-          mode: "no-cors",
-          body: formData,
-        }
-      );
+      const r = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, accepted: true }),
+      });
 
-      toast.success("Sprawdź maila 📩 Potwierdź zapis!");
-      setEmail("");
-    } catch (err) {
-      toast.error("Coś poszło nie tak. Spróbuj ponownie.");
+      const data = await r.json().catch(() => ({}));
+
+      if (!r.ok) {
+        setSubmitted("error");
+        setErrorMsg(data?.error || "Nie udało się zapisać. Spróbuj ponownie.");
+        return;
+      }
+
+      setSubmitted("ok");
+    } catch {
+      setSubmitted("error");
+      setErrorMsg("Błąd sieci. Spróbuj ponownie.");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
-  };
+  }
 
   return (
-    <section id="signup" className="py-32 px-6 relative">
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] rounded-full bg-primary/8 blur-[120px] animate-pulse-glow" />
-      </div>
-
-      <motion.div
-        initial={{ y: 40, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.7 }}
-        className="max-w-2xl mx-auto text-center relative z-10"
-      >
-        <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 leading-tight">
-          Premiera wkrótce.{" "}
-          <span className="text-primary neon-text">
-            Dołącz do pierwszych 1000 użytkowników.
-          </span>
-        </h2>
-
-        <p className="text-muted-foreground text-lg mb-10">
-          Zostaw swój email, a powiadomimy Cię jako pierwszego.
-        </p>
-
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
+    <section id="signup" className="py-24">
+      <div className="container">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="glass neon-glow rounded-3xl p-8 md:p-12 text-center"
         >
-          <Input
-            type="email"
-            placeholder="twoj@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            disabled={loading}
-            className="bg-muted/50 border-border focus:border-primary h-12 rounded-xl"
-          />
+          <div className="mb-10 md:mb-12 text-center">
+            <h1 className="text-3xl md:text-5xl font-display font-bold leading-tight">
+              <span className="text-white">Premiera wkrótce.</span>
+              <br />
+              <span className="text-primary neon-text">
+                Dołącz do pierwszych 1000 użytkowników
+              </span>
+            </h1>
+          </div>
 
-          <Button
-            type="submit"
-            size="lg"
-            disabled={loading}
-            className="bg-primary hover:bg-primary/90 h-12 px-8 rounded-xl"
-          >
-            {loading ? "Wysyłanie..." : "Dołączam"}
-          </Button>
-        </form>
-      </motion.div>
+          <p className="text-muted-foreground text-lg md:text-xl mb-10 max-w-2xl mx-auto">
+            Zostaw swój email, a powiadomimy Cię jako pierwszego.
+          </p>
+
+          <div className="max-w-2xl mx-auto">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="twój@email.com"
+                required
+                className="bg-muted/50 border-border focus:border-primary h-12 rounded-xl"
+              />
+
+              <Button
+                type="button"
+                className="h-12 rounded-xl px-10 transition-all duration-300 hover:scale-[1.03] active:scale-[0.98]"
+                disabled={!accepted || loading || !email}
+                onClick={handleJoin}
+              >
+                {loading ? "Wysyłam..." : "Dołączam"}
+              </Button>
+            </div>
+
+            <label className="mt-4 flex items-start gap-3 text-sm text-muted-foreground text-left">
+              <input
+                type="checkbox"
+                required
+                checked={accepted}
+                onChange={(e) => setAccepted(e.target.checked)}
+                className="mt-1"
+              />
+              <span>
+                Akceptuję{" "}
+                <a className="underline hover:text-foreground" href="/terms">
+                  Regulamin
+                </a>{" "}
+                oraz{" "}
+                <a className="underline hover:text-foreground" href="/privacy">
+                  Politykę prywatności
+                </a>
+                .
+              </span>
+            </label>
+
+            <AnimatePresence>
+              {submitted === "ok" && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.98 }}
+                  transition={{ duration: 0.35 }}
+                  className="mt-5 mx-auto max-w-xl rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground"
+                >
+                  <span className="text-primary font-semibold">Gotowe.</span>{" "}
+                  Sprawdź maila i potwierdź zapis (double opt-in).
+                </motion.div>
+              )}
+
+              {submitted === "error" && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.98 }}
+                  transition={{ duration: 0.35 }}
+                  className="mt-5 mx-auto max-w-xl rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-foreground"
+                >
+                  <span className="font-semibold">Ups.</span> {errorMsg}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <p className="text-xs text-muted-foreground mt-3">
+              Double opt-in jest włączony — po zapisie potwierdzisz klikając link w mailu.
+            </p>
+          </div>
+        </motion.div>
+      </div>
     </section>
   );
 };
