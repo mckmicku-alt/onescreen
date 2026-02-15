@@ -10,15 +10,16 @@ import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
-  // kolejność slajdów w dół (bez footer — footer wykrywamy scroll-em)
+  // kolejność slajdów w dół (footer wykrywamy scroll-em)
   const order = useMemo(
     () => ["top", "intro", "problem", "how", "recommend", "beta"],
     []
   );
 
   const [isFooter, setIsFooter] = useState(false);
+  const [eggOn, setEggOn] = useState(false);
 
-  // 1) wykrycie dołu strony (pewne)
+  // wykrycie dołu strony (pewne)
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY || 0;
@@ -36,7 +37,30 @@ const Index = () => {
     };
   }, []);
 
-  // helper: znajdź “aktualną” sekcję po pozycji na ekranie
+  // Easter egg: Alt + X + D (bezpiecznie: wykrycie “jednoczesnego” trzymania)
+  useEffect(() => {
+    const pressed = new Set<string>();
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      pressed.add(e.key.toLowerCase());
+      if (e.altKey && pressed.has("x") && pressed.has("d")) {
+        setEggOn((v) => !v);
+      }
+    };
+
+    const onKeyUp = (e: KeyboardEvent) => {
+      pressed.delete(e.key.toLowerCase());
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keyup", onKeyUp);
+    };
+  }, []);
+
+  // deterministyczne “następna sekcja” po położeniu na ekranie
   const getCurrentSectionIndex = () => {
     const offset = 96; // bezpieczny offset pod navbar / sticky
     const els = order
@@ -45,7 +69,6 @@ const Index = () => {
 
     if (!els.length) return 0;
 
-    // wybierz sekcję, której top jest najbliżej offsetu (z góry)
     let bestIdx = 0;
     let bestDist = Number.POSITIVE_INFINITY;
 
@@ -76,6 +99,10 @@ const Index = () => {
 
   const bottomPos = "clamp(34px, 6vh, 78px)";
 
+  const footerLabel = eggOn
+    ? "Szukaj uważnie, przyjacielu!"
+    : "Wróć do strony głównej";
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
@@ -84,7 +111,6 @@ const Index = () => {
         <div id="top" />
         <ComingSoonBanner />
 
-        {/* 2 slajd — to MUSI być HeroSection */}
         <div id="intro" />
         <HeroSection />
 
@@ -103,24 +129,31 @@ const Index = () => {
 
       <Footer />
 
-      {/* JEDEN DOCK */}
+      {/* DOCK */}
       <div
         className="fixed left-1/2 -translate-x-1/2 z-[9999] flex flex-col items-center gap-2"
         style={{ bottom: bottomPos }}
       >
-        {/* napis tylko na dole, bez obrysów, lekki glow */}
+        {/* napis tylko na dole, bez tła */}
         {isFooter && (
-          <div
-            className="text-sm md:text-[15px] tracking-tight"
+          <button
+            type="button"
+            onClick={scrollTop}
+            className="text-sm md:text-[15px] tracking-tight transition-transform hover:scale-[1.02] active:scale-[0.99]"
             style={{
               color: "rgba(255,255,255,0.92)",
-              textShadow: "0 0 18px rgba(120,170,255,0.30)",
+              textShadow:
+                "0 0 18px rgba(120,170,255,0.26), 0 10px 40px rgba(0,0,0,0.35)",
+              fontWeight: 500,
             }}
+            aria-label="Wróć do strony głównej"
+            title="Wróć do strony głównej"
           >
-            Wróć do strony głównej
-          </div>
+            {footerLabel}
+          </button>
         )}
 
+        {/* strzałka */}
         <button
           type="button"
           onClick={isFooter ? scrollTop : scrollNext}
@@ -128,7 +161,7 @@ const Index = () => {
           className="transition-transform hover:scale-125 active:scale-110 opacity-95"
           style={{
             filter: isFooter
-              ? "drop-shadow(0 0 18px rgba(120,170,255,0.55)) drop-shadow(0 10px 40px rgba(0,0,0,0.55))"
+              ? "drop-shadow(0 0 18px rgba(120,170,255,0.50)) drop-shadow(0 10px 40px rgba(0,0,0,0.55))"
               : "drop-shadow(0 10px 40px rgba(0,0,0,0.55))",
           }}
         >
