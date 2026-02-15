@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { toast } from "sonner";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -40,7 +39,7 @@ const CTASection = () => {
       }
 
       if (r.status === 409) {
-        toast.info("Ten adres e‑mail jest już na naszej liście ✅", { position: "top-center" });
+        toast.info("Ten adres e‑mail jest już na naszej liście ✔️", { position: "top-center" });
         return;
       }
 
@@ -53,21 +52,20 @@ const CTASection = () => {
   }
 
   return (
-    <section id="cta" className="py-20">
-      <div className="mx-auto max-w-3xl px-4">
-        {/* Bańka z półprzezroczystym tłem */}
-        <div className="rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 p-10 shadow-lg">
-          <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
+    <section id="cta" className="py-24">
+      <div className="mx-auto max-w-5xl px-6 text-center">
+        <div className="rounded-[32px] bg-white/5 backdrop-blur-lg border border-white/10 p-16 shadow-2xl">
+          <h2 className="text-5xl md:text-6xl font-bold text-white mb-4">
             Premiera wkrótce.
           </h2>
-          <p className="mt-4 text-2xl md:text-3xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-pink-500 to-red-500">
+          <p className="text-3xl md:text-4xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 mb-2">
             Dołącz do pierwszych 1000 użytkowników.
           </p>
-          <p className="mt-2 text-lg text-muted-foreground">
+          <p className="text-lg md:text-xl text-muted-foreground mb-8">
             Zostaw e‑mail, jeśli jesteś zainteresowany!
           </p>
 
-          <div className="mt-8 flex flex-col items-center gap-4">
+          <div className="flex flex-col items-center gap-4">
             <div className="w-full max-w-xl flex flex-col sm:flex-row gap-3">
               <Input
                 value={email}
@@ -81,7 +79,7 @@ const CTASection = () => {
               </Button>
             </div>
 
-            <label className="flex items-start gap-3 text-sm text-muted-foreground max-w-xl text-left">
+            <label className="flex items-start gap-3 text-sm text-muted-foreground max-w-xl text-left mt-2">
               <input
                 type="checkbox"
                 checked={accepted}
@@ -90,7 +88,8 @@ const CTASection = () => {
               />
               <span>
                 Akceptuję{" "}
-                <a className="underline" href="/regulamin">Regulamin</a> oraz{" "}
+                <a className="underline" href="/regulamin">Regulamin</a>{" "}
+                oraz{" "}
                 <a className="underline" href="/polityka-prywatnosci">Politykę prywatności</a>.
               </span>
             </label>

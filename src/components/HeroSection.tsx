@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-      {/* Background glow effects */}
+      {/* Efekty tła */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-primary/10 blur-[120px] animate-pulse-glow" />
         <div className="absolute bottom-1/4 left-1/3 w-[400px] h-[400px] rounded-full bg-accent/10 blur-[100px] animate-pulse-glow" style={{ animationDelay: "1.5s" }} />
@@ -36,13 +36,15 @@ const HeroSection = () => {
           transition={{ duration: 0.8, delay: 0.6 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <Button
-            size="lg"
-            className="bg-primary hover:bg-primary/90 text-primary-foreground neon-glow px-8 py-6 text-base font-display font-semibold rounded-xl"
-            onClick={() => document.getElementById("signup")?.scrollIntoView({ behavior: "smooth" })}
-          >
-            Dołącz do beta testów
-          </Button>
+          {/* Przycisk z linkiem do sekcji CTA */}
+          <a href="#cta">
+            <Button
+              size="lg"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground neon-glow px-8 py-6 text-base font-display font-semibold rounded-xl"
+            >
+              Dołącz do beta testów
+            </Button>
+          </a>
           <Button
             size="lg"
             variant="outline"
