@@ -18,7 +18,6 @@ const ComingSoonBanner = () => {
               "radial-gradient(ellipse at 50% 30%, rgba(40,120,255,0.30), rgba(2,6,23,1) 65%)",
           }}
         />
-        {/* dodatkowe przyciemnienie brzegów */}
         <div
           aria-hidden="true"
           className="absolute inset-0 -z-10"
@@ -28,23 +27,28 @@ const ComingSoonBanner = () => {
           }}
         />
 
-        {/* lampy jako osobne obrazy */}
+        {/* lampy – symetryczne, bardziej schowane, z blendem */}
         <img
           src="/lights/left-lamp.png"
           alt=""
-          className="pointer-events-none select-none absolute -top-10 left-[-6%] w-[38vw] max-w-[420px] opacity-85"
-          style={{ filter: "saturate(1.1) contrast(1.05)" }}
+          className="pointer-events-none select-none absolute -top-12 left-[-8%] w-[32vw] max-w-[360px] opacity-80"
+          style={{
+            filter: "saturate(1.1) contrast(1.05)",
+            mixBlendMode: "screen",
+          }}
         />
         <img
           src="/lights/right-lamp.png"
           alt=""
-          className="pointer-events-none select-none absolute -top-10 right-[-6%] w-[38vw] max-w-[420px] opacity-85"
-          style={{ filter: "saturate(1.1) contrast(1.05)" }}
+          className="pointer-events-none select-none absolute -top-12 right-[-8%] w-[32vw] max-w-[360px] opacity-80"
+          style={{
+            filter: "saturate(1.1) contrast(1.05)",
+            mixBlendMode: "screen",
+          }}
         />
 
         {/* główny kontent */}
         <div className="relative z-10 flex flex-col items-center text-center">
-          {/* subtelny glow pod tytułem */}
           <div
             aria-hidden="true"
             className="absolute -top-10 left-1/2 h-40 w-[26rem] -translate-x-1/2 blur-3xl opacity-70"
@@ -58,16 +62,16 @@ const ComingSoonBanner = () => {
             Coming&nbsp;Soon
           </h1>
 
-          {/* interaktywna strzałka */}
+          {/* strzałka – BEZ kółka, tylko ikonka powiększająca się na hover */}
           <button
             type="button"
             onClick={scrollDown}
             aria-label="Przewiń w dół"
-            className="mt-10 inline-flex items-center justify-center rounded-full border border-white/18 bg-white/6 p-4 backdrop-blur-md transition-transform transition-colors hover:scale-110 hover:bg-white/12 active:scale-105"
+            className="mt-8 inline-flex items-center justify-center transition-transform hover:scale-125 active:scale-110"
           >
             <svg
-              width="30"
-              height="30"
+              width="28"
+              height="28"
               viewBox="0 0 24 24"
               fill="none"
               className="opacity-95"
@@ -83,7 +87,7 @@ const ComingSoonBanner = () => {
           </button>
         </div>
 
-        {/* miękkie przejście do reszty strony */}
+        {/* przejście do dalszej części strony */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 bottom-0 h-24 -z-10"
