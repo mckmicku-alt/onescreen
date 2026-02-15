@@ -61,10 +61,7 @@ const Index = () => {
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  // dół znika na footer
-  const showDown = activeId !== "footer";
-  // góra tylko na footer
-  const showUp = activeId === "footer";
+  const isFooter = activeId === "footer";
 
   // wyżej i “premium”
   const bottomPos = "clamp(34px, 6vh, 78px)";
@@ -97,16 +94,46 @@ const Index = () => {
 
       <Footer />
 
-      {/* STRZAŁKA W DÓŁ */}
-      {showDown && (
+      {/* JEDEN “DOCK” NA DOLE: normalnie strzałka w dół, na footerze zmienia się w “w górę” + label */}
+      <div
+        className="fixed left-1/2 -translate-x-1/2 z-[9999] flex flex-col items-center gap-3"
+        style={{ bottom: bottomPos }}
+      >
+        {isFooter && (
+          <div
+            className="px-4 py-2 rounded-full text-sm md:text-[15px] tracking-tight"
+            style={{
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              boxShadow:
+                "0 14px 50px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04) inset",
+              color: "rgba(255,255,255,0.92)",
+            }}
+          >
+            Wróć do strony głównej
+          </div>
+        )}
+
         <button
           type="button"
-          onClick={scrollNext}
-          aria-label="Przewiń w dół"
-          className="fixed left-1/2 -translate-x-1/2 z-[9999] transition-transform hover:scale-125 active:scale-110 opacity-95"
-          style={{ bottom: bottomPos }}
+          onClick={isFooter ? scrollTop : scrollNext}
+          aria-label={isFooter ? "Wróć do góry" : "Przewiń w dół"}
+          className="transition-transform hover:scale-125 active:scale-110 opacity-95"
+          style={{
+            filter: isFooter
+              ? "drop-shadow(0 0 18px rgba(120,170,255,0.55)) drop-shadow(0 10px 40px rgba(0,0,0,0.55))"
+              : "drop-shadow(0 10px 40px rgba(0,0,0,0.55))",
+          }}
         >
-          <svg width="42" height="42" viewBox="0 0 24 24" fill="none">
+          <svg
+            width="44"
+            height="44"
+            viewBox="0 0 24 24"
+            fill="none"
+            style={{ transform: isFooter ? "rotate(180deg)" : "none" }}
+          >
             <path
               d="M6 9l6 6 6-6"
               stroke="white"
@@ -117,53 +144,7 @@ const Index = () => {
             />
           </svg>
         </button>
-      )}
-
-      {/* POWRÓT NA GÓRĘ (TYLKO NA DOLE) */}
-      {showUp && (
-        <div
-          className="fixed left-1/2 -translate-x-1/2 z-[9999] flex flex-col items-center gap-3"
-          style={{ bottom: bottomPos }}
-        >
-          <div
-            className="px-4 py-2 rounded-full text-sm md:text-[15px] tracking-tight"
-            style={{
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.10)",
-              backdropFilter: "blur(10px)",
-              WebkitBackdropFilter: "blur(10px)",
-              boxShadow: "0 10px 40px rgba(0,0,0,0.45)",
-              color: "rgba(255,255,255,0.92)",
-            }}
-          >
-            Wróć do strony głównej
-          </div>
-
-          <button
-            type="button"
-            onClick={scrollTop}
-            aria-label="Wróć na górę"
-            className="transition-transform hover:scale-125 active:scale-110 opacity-95"
-          >
-            <svg
-              width="44"
-              height="44"
-              viewBox="0 0 24 24"
-              fill="none"
-              style={{ transform: "rotate(180deg)" }}
-            >
-              <path
-                d="M6 9l6 6 6-6"
-                stroke="white"
-                strokeWidth="2.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                opacity="0.95"
-              />
-            </svg>
-          </button>
-        </div>
-      )}
+      </div>
     </div>
   );
 };
