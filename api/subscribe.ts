@@ -1,7 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // CORS dla Twojego frontu (localhost + domena)
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -30,7 +29,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(500).json({ ok: false, error: "BREVO_LIST_ID must be a number" });
     }
 
-    // Dodaj kontakt do listy w Brevo
+    // DEBUG (bez danych wrażliwych)
+    console.log("[subscribe] email:", email);
+    console.log("[subscribe] listId:", listId);
+
     const r = await fetch("https://api.brevo.com/v3/contacts", {
       method: "POST",
       headers: {
@@ -45,14 +47,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }),
     });
 
-    // Brevo zwraca czasem 201, a czasem 204/400/… — czytamy body jeśli jest
     const text = await r.text();
+
+    // DEBUG: pokaż dokładny błąd z Brevo
+    console.log("[subscribe] brevo status:", r.status);
+    console.log("[subscribe] brevo response:", text);
+
     if (!r.ok) {
       return res.status(400).json({ ok: false, error: "Brevo error", details: text });
     }
 
     return res.status(200).json({ ok: true });
   } catch (e: any) {
+    console.log("[subscribe] server error:", String(e?.message || e));
     return res.status(500).json({ ok: false, error: "Server error", details: String(e?.message || e) });
   }
 }
