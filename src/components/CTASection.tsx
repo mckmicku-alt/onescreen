@@ -13,11 +13,11 @@ const CTASection = () => {
     const e = email.trim();
 
     if (!e) {
-      toast.error("Wpisz poprawny adres e-mail.");
+      toast.error("Wpisz poprawny adres e-mail.", { position: "top-center" });
       return;
     }
     if (!accepted) {
-      toast.error("Musisz zaakceptować regulamin i politykę prywatności.");
+      toast.error("Musisz zaakceptować regulamin i politykę prywatności.", { position: "top-center" });
       return;
     }
 
@@ -33,21 +33,20 @@ const CTASection = () => {
       const data = await r.json().catch(() => ({} as any));
 
       if (r.ok) {
-        toast.success("Gotowe! Jesteś na liście. Damy znać przed startem 🚀");
+        toast.success("Gotowe! Jesteś na liście. Damy znać przed startem 🚀", { position: "top-center" });
         setEmail("");
         setAccepted(false);
         return;
       }
 
-      // 409 = już na liście
       if (r.status === 409) {
-        toast.info("Ten adres e-mail jest już na naszej liście ✅");
+        toast.info("Ten adres e-mail jest już na naszej liście ✅", { position: "top-center" });
         return;
       }
 
-      toast.error(data?.error || "Ups — nie udało się zapisać. Spróbuj ponownie.");
+      toast.error(data?.error || "Ups — nie udało się zapisać. Spróbuj ponownie.", { position: "top-center" });
     } catch {
-      toast.error("Błąd sieci. Spróbuj ponownie.");
+      toast.error("Błąd sieci. Spróbuj ponownie.", { position: "top-center" });
     } finally {
       setLoading(false);
     }
@@ -56,9 +55,19 @@ const CTASection = () => {
   return (
     <section className="py-16">
       <div className="mx-auto max-w-3xl px-4 text-center">
-        <h2 className="text-4xl md:text-5xl font-bold">Premiera wkrótce.</h2>
-        <p className="mt-3 text-muted-foreground text-lg">
-          Dołącz do pierwszych użytkowników. Zostaw e-mail, a damy znać jako pierwsi.
+        {/* Nagłówek */}
+        <h2 className="text-5xl font-extrabold text-white">
+          Premiera wkrótce.
+        </h2>
+
+        {/* Neonowy napis */}
+        <p className="mt-3 text-3xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500">
+          Dołącz do pierwszych 1000&nbsp;użytkowników.
+        </p>
+
+        {/* Dodatkowy opis */}
+        <p className="mt-2 text-muted-foreground">
+          Zostaw swój e-mail, a damy znać jako pierwsi.
         </p>
 
         <div className="mt-8 flex flex-col items-center gap-4">
