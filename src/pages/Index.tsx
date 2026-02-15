@@ -10,6 +10,7 @@ import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
+  // UWAGA: footer = sentinel na absolutnym końcu (po <Footer />)
   const order = useMemo(
     () => ["top", "intro", "problem", "how", "recommend", "beta", "footer"],
     []
@@ -26,6 +27,16 @@ const Index = () => {
 
     const io = new IntersectionObserver(
       (entries) => {
+        // 1) jeśli footer jest widoczny choć trochę -> zawsze ustaw footer
+        const footerEntry = entries.find(
+          (e) => e.target.id === "footer" && e.isIntersecting
+        );
+        if (footerEntry) {
+          setActiveId("footer");
+          return;
+        }
+
+        // 2) inaczej wybierz najbardziej widoczny element
         const visible = entries
           .filter((e) => e.isIntersecting)
           .sort(
@@ -35,8 +46,8 @@ const Index = () => {
         if (visible?.target?.id) setActiveId(visible.target.id);
       },
       {
-        threshold: [0.2, 0.35, 0.5, 0.65],
-        rootMargin: "-5% 0px -55% 0px",
+        threshold: [0.15, 0.3, 0.45, 0.6],
+        rootMargin: "-5% 0px -45% 0px",
       }
     );
 
@@ -63,7 +74,7 @@ const Index = () => {
 
   const isFooter = activeId === "footer";
 
-  // wyżej i “premium”
+  // pozycja docka
   const bottomPos = "clamp(34px, 6vh, 78px)";
 
   return (
@@ -88,13 +99,14 @@ const Index = () => {
 
         <div id="beta" />
         <CTASection />
-
-        <div id="footer" />
       </main>
 
       <Footer />
 
-      {/* JEDEN “DOCK” NA DOLE: normalnie strzałka w dół, na footerze zmienia się w “w górę” + label */}
+      {/* SENTINEL NA SAMYM KOŃCU STRONY */}
+      <div id="footer" style={{ height: 2 }} />
+
+      {/* JEDEN DOCK: normalnie dół, na końcu zamienia się w górę */}
       <div
         className="fixed left-1/2 -translate-x-1/2 z-[9999] flex flex-col items-center gap-3"
         style={{ bottom: bottomPos }}
@@ -119,7 +131,7 @@ const Index = () => {
         <button
           type="button"
           onClick={isFooter ? scrollTop : scrollNext}
-          aria-label={isFooter ? "Wróć do góry" : "Przewiń w dół"}
+          aria-label={isFooter ? "Wróć na górę strony" : "Przewiń w dół"}
           className="transition-transform hover:scale-125 active:scale-110 opacity-95"
           style={{
             filter: isFooter
