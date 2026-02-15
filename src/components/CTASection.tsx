@@ -9,8 +9,9 @@ const CTASection = () => {
 
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState<"idle" | "ok" | "error">("idle");
+
   const [errorMsg, setErrorMsg] = useState<string>("");
-  const [errorDetails, setErrorDetails] = useState<string>("");
+  const [debugBlock, setDebugBlock] = useState<string>("");
 
   async function handleJoin() {
     if (!accepted) return;
@@ -18,7 +19,7 @@ const CTASection = () => {
     setLoading(true);
     setSubmitted("idle");
     setErrorMsg("");
-    setErrorDetails("");
+    setDebugBlock("");
 
     try {
       const r = await fetch("/api/subscribe", {
@@ -27,19 +28,40 @@ const CTASection = () => {
         body: JSON.stringify({ email, accepted: true }),
       });
 
-      const data = await r.json().catch(() => ({}));
+      // Spróbujmy odczytać JSON, a jak nie wyjdzie — tekst
+      let data: any = null;
+      let rawText = "";
+
+      try {
+        data = await r.json();
+      } catch {
+        try {
+          rawText = await r.text();
+        } catch {
+          rawText = "";
+        }
+      }
 
       if (!r.ok) {
         setSubmitted("error");
-        setErrorMsg(data?.error || "Nie udało się zapisać. Spróbuj ponownie.");
-        setErrorDetails(typeof data?.details === "string" ? data.details : "");
+        setErrorMsg((data && data.error) || "Nie udało się zapisać. Spróbuj ponownie.");
+
+        // Debug: pokaż WSZYSTKO co przyszło z backendu + status
+        const dbg = {
+          status: r.status,
+          statusText: r.statusText,
+          data,
+          rawText,
+        };
+        setDebugBlock(JSON.stringify(dbg, null, 2));
         return;
       }
 
       setSubmitted("ok");
-    } catch {
+    } catch (e: any) {
       setSubmitted("error");
       setErrorMsg("Błąd sieci. Spróbuj ponownie.");
+      setDebugBlock(JSON.stringify({ networkError: String(e?.message || e) }, null, 2));
     } finally {
       setLoading(false);
     }
@@ -135,9 +157,10 @@ const CTASection = () => {
                 >
                   <div className="font-semibold mb-1">Ups.</div>
                   <div>{errorMsg}</div>
-                  {errorDetails && (
-                    <pre className="mt-2 overflow-auto whitespace-pre-wrap text-xs opacity-80">
-                      {errorDetails}
+
+                  {debugBlock && (
+                    <pre className="mt-3 max-h-56 overflow-auto whitespace-pre-wrap text-xs opacity-80">
+                      {debugBlock}
                     </pre>
                   )}
                 </motion.div>
