@@ -10,53 +10,21 @@ import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
-  // sekcje do przewijania w dół
+  // kolejność slajdów w dół (bez footer — footer wykrywamy scroll-em)
   const order = useMemo(
     () => ["top", "intro", "problem", "how", "recommend", "beta"],
     []
   );
 
-  const [activeId, setActiveId] = useState<string>("top");
   const [isFooter, setIsFooter] = useState(false);
 
-  // 1) aktywna sekcja (IntersectionObserver) – tylko do przewijania “w dół”
-  useEffect(() => {
-    const elements = order
-      .map((id) => document.getElementById(id))
-      .filter(Boolean) as HTMLElement[];
-
-    if (!elements.length) return;
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort(
-            (a, b) => (b.intersectionRatio ?? 0) - (a.intersectionRatio ?? 0)
-          )[0];
-
-        if (visible?.target?.id) setActiveId(visible.target.id);
-      },
-      {
-        threshold: [0.2, 0.35, 0.5, 0.65],
-        rootMargin: "-5% 0px -55% 0px",
-      }
-    );
-
-    elements.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, [order]);
-
-  // 2) WYKRYWANIE DOŁU – pewne na 100% (scroll)
+  // 1) wykrycie dołu strony (pewne)
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY || 0;
       const vh = window.innerHeight || 0;
       const docH = document.documentElement.scrollHeight || 0;
-
-      // gdy jesteś blisko końca (80px) -> przełącz na tryb “footer”
-      const nearBottom = y + vh >= docH - 80;
-      setIsFooter(nearBottom);
+      setIsFooter(y + vh >= docH - 80);
     };
 
     onScroll();
@@ -68,15 +36,36 @@ const Index = () => {
     };
   }, []);
 
-  const nextId = useMemo(() => {
-    const idx = order.indexOf(activeId);
-    if (idx === -1) return "intro";
-    return order[Math.min(idx + 1, order.length - 1)];
-  }, [activeId, order]);
+  // helper: znajdź “aktualną” sekcję po pozycji na ekranie
+  const getCurrentSectionIndex = () => {
+    const offset = 96; // bezpieczny offset pod navbar / sticky
+    const els = order
+      .map((id) => document.getElementById(id))
+      .filter(Boolean) as HTMLElement[];
+
+    if (!els.length) return 0;
+
+    // wybierz sekcję, której top jest najbliżej offsetu (z góry)
+    let bestIdx = 0;
+    let bestDist = Number.POSITIVE_INFINITY;
+
+    els.forEach((el, idx) => {
+      const top = el.getBoundingClientRect().top;
+      const dist = Math.abs(top - offset);
+      if (dist < bestDist) {
+        bestDist = dist;
+        bestIdx = idx;
+      }
+    });
+
+    return bestIdx;
+  };
 
   const scrollNext = () => {
-    const id = activeId === "top" ? "intro" : nextId;
-    const el = document.getElementById(id);
+    const idx = getCurrentSectionIndex();
+    const nextIdx = Math.min(idx + 1, order.length - 1);
+    const nextId = order[nextIdx];
+    const el = document.getElementById(nextId);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
@@ -95,6 +84,7 @@ const Index = () => {
         <div id="top" />
         <ComingSoonBanner />
 
+        {/* 2 slajd — to MUSI być HeroSection */}
         <div id="intro" />
         <HeroSection />
 
@@ -113,22 +103,18 @@ const Index = () => {
 
       <Footer />
 
-      {/* JEDEN DOCK: normalnie dół, na samym dole zmienia się w górę + label */}
+      {/* JEDEN DOCK */}
       <div
-        className="fixed left-1/2 -translate-x-1/2 z-[9999] flex flex-col items-center gap-3"
+        className="fixed left-1/2 -translate-x-1/2 z-[9999] flex flex-col items-center gap-2"
         style={{ bottom: bottomPos }}
       >
+        {/* napis tylko na dole, bez obrysów, lekki glow */}
         {isFooter && (
           <div
-            className="px-4 py-2 rounded-full text-sm md:text-[15px] tracking-tight"
+            className="text-sm md:text-[15px] tracking-tight"
             style={{
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.12)",
-              backdropFilter: "blur(12px)",
-              WebkitBackdropFilter: "blur(12px)",
-              boxShadow:
-                "0 14px 50px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04) inset",
               color: "rgba(255,255,255,0.92)",
+              textShadow: "0 0 18px rgba(120,170,255,0.30)",
             }}
           >
             Wróć do strony głównej
