@@ -14,6 +14,10 @@ const Index = () => {
 
       <main>
         <ComingSoonBanner />
+
+        {/* tu scrolluje strzałka */}
+        <div id="content" />
+
         <HeroSection />
         <ProblemSection />
         <HowItWorksSection />
