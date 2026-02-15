@@ -7,21 +7,11 @@ const ComingSoonBanner = () => {
   return (
     <section className="relative w-full pt-20 md:pt-24">
       <div className="relative mx-auto h-[92vh] min-h-[620px] max-w-6xl overflow-hidden px-6 flex items-center justify-center">
-        {/* TŁO jako <img> (pewne na 100%) */}
+        {/* TEST: pokaż obraz bez overlay – musi być widoczny */}
         <img
           src="/hero-bg.png"
-          alt=""
-          className="absolute inset-0 -z-20 h-full w-full object-cover"
-        />
-
-        {/* filmowe przyciemnienie + winieta */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 -z-10"
-          style={{
-            background:
-              "radial-gradient(ellipse at center, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.68) 60%, rgba(0,0,0,0.90) 100%)",
-          }}
+          alt="hero-bg-test"
+          className="absolute inset-0 z-0 h-full w-full object-cover opacity-100"
         />
 
         {/* napis */}
@@ -30,7 +20,6 @@ const ComingSoonBanner = () => {
             Coming&nbsp;Soon
           </h1>
 
-          {/* strzałka */}
           <button
             type="button"
             onClick={scrollDown}
@@ -48,16 +37,6 @@ const ComingSoonBanner = () => {
             </svg>
           </button>
         </div>
-
-        {/* blend do reszty strony */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-x-0 bottom-0 h-28 -z-10"
-          style={{
-            background:
-              "linear-gradient(to bottom, rgba(0,0,0,0) 0%, hsl(var(--background)) 100%)",
-          }}
-        />
       </div>
     </section>
   );
