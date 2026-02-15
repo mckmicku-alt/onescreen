@@ -1,9 +1,4 @@
 const ComingSoonBanner = () => {
-  const scrollDown = () => {
-    const el = document.getElementById("intro");
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
   return (
     <section className="relative w-full">
       <div className="relative h-[100vh] min-h-[720px] w-full overflow-hidden bg-background">
@@ -28,7 +23,7 @@ const ComingSoonBanner = () => {
           }}
         />
 
-        {/* Subtelny glow (premium) */}
+        {/* Subtelny glow */}
         <div
           aria-hidden="true"
           className="absolute inset-0 z-[2] opacity-75"
@@ -38,7 +33,7 @@ const ComingSoonBanner = () => {
           }}
         />
 
-        {/* Top fade pod nav */}
+        {/* Top fade */}
         <div
           aria-hidden="true"
           className="absolute inset-x-0 top-0 z-[3] h-44"
@@ -48,7 +43,7 @@ const ComingSoonBanner = () => {
           }}
         />
 
-        {/* BOTTOM FADE — płynniejsze, dłuższe, “wow” */}
+        {/* Bottom fade (płynniej) */}
         <div
           aria-hidden="true"
           className="absolute inset-x-0 bottom-0 z-[4] h-[48vh]"
@@ -58,7 +53,7 @@ const ComingSoonBanner = () => {
           }}
         />
 
-        {/* Mgła/blur tylko na dole + maska żeby nie robiło “kreski” */}
+        {/* Mgła/blur */}
         <div
           aria-hidden="true"
           className="absolute inset-x-0 bottom-0 z-[5] h-[34vh] opacity-90"
@@ -73,27 +68,6 @@ const ComingSoonBanner = () => {
               "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.85) 35%, rgba(0,0,0,1) 100%)",
           }}
         />
-
-        {/* Strzałka w HERO (na dole ekranu, responsywnie) */}
-        <button
-          type="button"
-          onClick={scrollDown}
-          aria-label="Przewiń do następnej sekcji"
-          className="absolute left-1/2 -translate-x-1/2 z-[10] transition-transform hover:scale-125 active:scale-110 opacity-95"
-          style={{
-            bottom: "clamp(22px, 4.2vh, 56px)",
-          }}
-        >
-          <svg width="42" height="42" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M6 9l6 6 6-6"
-              stroke="white"
-              strokeWidth="2.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
       </div>
     </section>
   );

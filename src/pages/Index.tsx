@@ -10,8 +10,7 @@ import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
-  // KOLEJNOŚĆ MA BYĆ:
-  // Hero (kurtyna) -> Intro (2 przyciski) -> Problem -> How -> Recommend -> Beta (email) -> Footer
+  // Kolejność slajdów (pierwszy = hero)
   const order = useMemo(
     () => ["top", "intro", "problem", "how", "recommend", "beta", "footer"],
     []
@@ -30,13 +29,16 @@ const Index = () => {
       (entries) => {
         const visible = entries
           .filter((e) => e.isIntersecting)
-          .sort((a, b) => (b.intersectionRatio ?? 0) - (a.intersectionRatio ?? 0))[0];
+          .sort(
+            (a, b) => (b.intersectionRatio ?? 0) - (a.intersectionRatio ?? 0)
+          )[0];
 
         if (visible?.target?.id) setActiveId(visible.target.id);
       },
       {
-        threshold: [0.25, 0.4, 0.55, 0.7],
-        rootMargin: "-10% 0px -55% 0px",
+        threshold: [0.2, 0.35, 0.5, 0.65],
+        // ważne: hero nie “traci” aktywności za szybko, więc nie przeskakuje od razu
+        rootMargin: "-5% 0px -55% 0px",
       }
     );
 
@@ -61,48 +63,57 @@ const Index = () => {
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
+  // dół znika na footer
   const showDown = activeId !== "footer";
-  const showUp = activeId === "footer";
+  // góra ma być na 2 slajdzie i na ostatnim
+  const showUp = activeId === "intro" || activeId === "footer";
+
+  // pozycja strzałek: wyżej niż wcześniej (żeby wyglądało premium)
+  const bottomPos = "clamp(34px, 6vh, 78px)";
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
 
       <main>
+        {/* 1) HERO */}
         <div id="top" />
-
         <ComingSoonBanner />
 
-        {/* 2. ekran: ma być Hero z 2 przyciskami */}
+        {/* 2) INTRO (2 przyciski: Dołącz / Jak działa) */}
         <div id="intro" />
         <HeroSection />
 
+        {/* 3) PROBLEM */}
         <div id="problem" />
         <ProblemSection />
 
+        {/* 4) HOW */}
         <div id="how" />
         <HowItWorksSection />
 
+        {/* 5) RECOMMEND */}
         <div id="recommend" />
         <RecommendationSection />
 
-        {/* Beta / mail dopiero bliżej końca */}
+        {/* 6) BETA (mail) */}
         <div id="beta" />
         <CTASection />
 
+        {/* 7) FOOTER */}
         <div id="footer" />
       </main>
 
       <Footer />
 
-      {/* GLOBALNE STRZAŁKI */}
+      {/* STRZAŁKA W DÓŁ */}
       {showDown && (
         <button
           type="button"
           onClick={scrollNext}
-          aria-label="Przewiń do kolejnej sekcji"
+          aria-label="Przewiń w dół"
           className="fixed left-1/2 -translate-x-1/2 z-[9999] transition-transform hover:scale-125 active:scale-110 opacity-95"
-          style={{ bottom: "clamp(20px, 4.2vh, 56px)" }}
+          style={{ bottom: bottomPos }}
         >
           <svg width="42" height="42" viewBox="0 0 24 24" fill="none">
             <path
@@ -117,17 +128,18 @@ const Index = () => {
         </button>
       )}
 
+      {/* STRZAŁKA W GÓRĘ (2 slajd i ostatni) */}
       {showUp && (
         <button
           type="button"
           onClick={scrollTop}
           aria-label="Wróć na górę"
-          className="fixed left-1/2 -translate-x-1/2 z-[9999] transition-transform hover:scale-125 active:scale-110 opacity-95"
-          style={{ bottom: "clamp(20px, 4.2vh, 56px)" }}
+          className="fixed left-1/2 -translate-x-1/2 z-[9999] transition-transform hover:scale-125 active:scale-110 opacity-85"
+          style={{ bottom: `calc(${bottomPos} + 54px)` }}
         >
           <svg
-            width="42"
-            height="42"
+            width="38"
+            height="38"
             viewBox="0 0 24 24"
             fill="none"
             style={{ transform: "rotate(180deg)" }}
@@ -135,10 +147,10 @@ const Index = () => {
             <path
               d="M6 9l6 6 6-6"
               stroke="white"
-              strokeWidth="2.8"
+              strokeWidth="2.6"
               strokeLinecap="round"
               strokeLinejoin="round"
-              opacity="0.95"
+              opacity="0.9"
             />
           </svg>
         </button>
