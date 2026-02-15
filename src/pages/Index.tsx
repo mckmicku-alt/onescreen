@@ -10,7 +10,6 @@ import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
-  // Kolejność slajdów (pierwszy = hero)
   const order = useMemo(
     () => ["top", "intro", "problem", "how", "recommend", "beta", "footer"],
     []
@@ -37,7 +36,6 @@ const Index = () => {
       },
       {
         threshold: [0.2, 0.35, 0.5, 0.65],
-        // ważne: hero nie “traci” aktywności za szybko, więc nie przeskakuje od razu
         rootMargin: "-5% 0px -55% 0px",
       }
     );
@@ -65,10 +63,10 @@ const Index = () => {
 
   // dół znika na footer
   const showDown = activeId !== "footer";
-  // góra ma być na 2 slajdzie i na ostatnim
-  const showUp = activeId === "intro" || activeId === "footer";
+  // góra tylko na footer
+  const showUp = activeId === "footer";
 
-  // pozycja strzałek: wyżej niż wcześniej (żeby wyglądało premium)
+  // wyżej i “premium”
   const bottomPos = "clamp(34px, 6vh, 78px)";
 
   return (
@@ -76,31 +74,24 @@ const Index = () => {
       <Navbar />
 
       <main>
-        {/* 1) HERO */}
         <div id="top" />
         <ComingSoonBanner />
 
-        {/* 2) INTRO (2 przyciski: Dołącz / Jak działa) */}
         <div id="intro" />
         <HeroSection />
 
-        {/* 3) PROBLEM */}
         <div id="problem" />
         <ProblemSection />
 
-        {/* 4) HOW */}
         <div id="how" />
         <HowItWorksSection />
 
-        {/* 5) RECOMMEND */}
         <div id="recommend" />
         <RecommendationSection />
 
-        {/* 6) BETA (mail) */}
         <div id="beta" />
         <CTASection />
 
-        {/* 7) FOOTER */}
         <div id="footer" />
       </main>
 
@@ -128,32 +119,50 @@ const Index = () => {
         </button>
       )}
 
-      {/* STRZAŁKA W GÓRĘ (2 slajd i ostatni) */}
+      {/* POWRÓT NA GÓRĘ (TYLKO NA DOLE) */}
       {showUp && (
-        <button
-          type="button"
-          onClick={scrollTop}
-          aria-label="Wróć na górę"
-          className="fixed left-1/2 -translate-x-1/2 z-[9999] transition-transform hover:scale-125 active:scale-110 opacity-85"
-          style={{ bottom: `calc(${bottomPos} + 54px)` }}
+        <div
+          className="fixed left-1/2 -translate-x-1/2 z-[9999] flex flex-col items-center gap-3"
+          style={{ bottom: bottomPos }}
         >
-          <svg
-            width="38"
-            height="38"
-            viewBox="0 0 24 24"
-            fill="none"
-            style={{ transform: "rotate(180deg)" }}
+          <div
+            className="px-4 py-2 rounded-full text-sm md:text-[15px] tracking-tight"
+            style={{
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.10)",
+              backdropFilter: "blur(10px)",
+              WebkitBackdropFilter: "blur(10px)",
+              boxShadow: "0 10px 40px rgba(0,0,0,0.45)",
+              color: "rgba(255,255,255,0.92)",
+            }}
           >
-            <path
-              d="M6 9l6 6 6-6"
-              stroke="white"
-              strokeWidth="2.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              opacity="0.9"
-            />
-          </svg>
-        </button>
+            Wróć do strony głównej
+          </div>
+
+          <button
+            type="button"
+            onClick={scrollTop}
+            aria-label="Wróć na górę"
+            className="transition-transform hover:scale-125 active:scale-110 opacity-95"
+          >
+            <svg
+              width="44"
+              height="44"
+              viewBox="0 0 24 24"
+              fill="none"
+              style={{ transform: "rotate(180deg)" }}
+            >
+              <path
+                d="M6 9l6 6 6-6"
+                stroke="white"
+                strokeWidth="2.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity="0.95"
+              />
+            </svg>
+          </button>
+        </div>
       )}
     </div>
   );
