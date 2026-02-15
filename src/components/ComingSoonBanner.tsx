@@ -6,7 +6,6 @@ const ComingSoonBanner = () => {
 
   return (
     <section className="relative w-full">
-      {/* Full-bleed hero */}
       <div className="relative h-[100vh] min-h-[720px] w-full overflow-hidden bg-background">
         {/* BG */}
         <img
@@ -15,7 +14,7 @@ const ComingSoonBanner = () => {
           className="absolute inset-0 z-0 h-full w-full object-cover"
           style={{
             transform: "scale(1.05)",
-            filter: "contrast(1.04) saturate(1.05)",
+            filter: "contrast(1.03) saturate(1.04)",
           }}
         />
 
@@ -25,21 +24,21 @@ const ComingSoonBanner = () => {
           className="absolute inset-0 z-[1]"
           style={{
             background:
-              "radial-gradient(ellipse at 50% 55%, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0.60) 62%, rgba(0,0,0,0.95) 100%)",
+              "radial-gradient(ellipse at 50% 55%, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0.58) 62%, rgba(0,0,0,0.95) 100%)",
           }}
         />
 
         {/* Subtle center glow */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 z-[2] opacity-70"
+          className="absolute inset-0 z-[2] opacity-65"
           style={{
             background:
-              "radial-gradient(ellipse at 50% 58%, rgba(110,140,255,0.14) 0%, rgba(80,60,255,0.10) 30%, rgba(0,0,0,0) 70%)",
+              "radial-gradient(ellipse at 50% 56%, rgba(110,140,255,0.12) 0%, rgba(80,60,255,0.09) 28%, rgba(0,0,0,0) 72%)",
           }}
         />
 
-        {/* Top fade (ukrywa krawędź pod navem) */}
+        {/* Top fade (pod nav) */}
         <div
           aria-hidden="true"
           className="absolute inset-x-0 top-0 z-[3] h-44"
@@ -49,33 +48,41 @@ const ComingSoonBanner = () => {
           }}
         />
 
-        {/* Bottom fade -> kolor strony (PŁYNNY + ROZMYTY) */}
+        {/* WOW FADE OUT — bardziej płynnie */}
         <div
           aria-hidden="true"
-          className="absolute inset-x-0 bottom-0 z-[4] h-[44vh]"
+          className="absolute inset-x-0 bottom-0 z-[4] h-[48vh]"
           style={{
             background:
-              "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.10) 18%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0.70) 75%, hsl(var(--background)) 100%)",
-          }}
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-x-0 bottom-0 z-[5] h-[30vh]"
-          style={{
-            background:
-              "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.40) 55%, hsl(var(--background)) 100%)",
-            filter: "blur(22px)",
-            transform: "scaleY(1.15)",
-            opacity: 0.95,
+              "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.06) 12%, rgba(0,0,0,0.18) 30%, rgba(0,0,0,0.42) 55%, rgba(0,0,0,0.72) 78%, hsl(var(--background)) 100%)",
           }}
         />
 
-        {/* Arrow fixed to bottom */}
+        {/* miękki “fog” (maska + blur) */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 bottom-0 z-[5] h-[34vh] opacity-95"
+          style={{
+            background:
+              "radial-gradient(ellipse at 50% 0%, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.35) 55%, hsl(var(--background)) 100%)",
+            filter: "blur(26px)",
+            transform: "scaleY(1.18)",
+            WebkitMaskImage:
+              "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.85) 35%, rgba(0,0,0,1) 100%)",
+            maskImage:
+              "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.85) 35%, rgba(0,0,0,1) 100%)",
+          }}
+        />
+
+        {/* strzałka — responsywnie (żeby nie znikała na telefonie) */}
         <button
           type="button"
           onClick={scrollDown}
           aria-label="Przewiń do kolejnej sekcji"
-          className="absolute bottom-8 md:bottom-10 left-1/2 -translate-x-1/2 z-[10] transition-transform hover:scale-125 active:scale-110 opacity-95"
+          className="absolute left-1/2 -translate-x-1/2 z-[10] transition-transform hover:scale-125 active:scale-110 opacity-95"
+          style={{
+            bottom: "clamp(18px, 4vh, 44px)",
+          }}
         >
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
             <path

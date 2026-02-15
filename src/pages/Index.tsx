@@ -14,12 +14,12 @@ const ScrollArrow = ({ toId, label }: { toId: string; label: string }) => {
   };
 
   return (
-    <div className="flex justify-center py-10">
+    <div className="flex justify-center py-8 md:py-10">
       <button
         type="button"
         onClick={go}
         aria-label={label}
-        className="transition-transform hover:scale-125 active:scale-110 opacity-90"
+        className="transition-transform hover:scale-125 active:scale-110 opacity-85"
       >
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
           <path
@@ -63,10 +63,9 @@ const Index = () => {
         <RecommendationSection />
         <ScrollArrow toId="cta" label="Przewiń do zapisu na betę" />
 
-        {/* 5) CTA (DOŁĄCZ) NA DOLE */}
+        {/* 5) CTA */}
         <div id="cta" />
         <CTASection />
-        <ScrollArrow toId="footer" label="Przewiń do stopki" />
       </main>
 
       <div id="footer" />
