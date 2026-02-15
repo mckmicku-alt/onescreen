@@ -10,9 +10,10 @@ import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
-  // kolejność “slajdów”
+  // Kolejność “slajdów” dla STRZAŁKI:
+  // start -> CTA (beta) -> reszta
   const order = useMemo(
-    () => ["top", "hero", "problem", "how", "recommend", "cta"],
+    () => ["top", "cta", "hero", "problem", "how", "recommend", "footer"],
     []
   );
 
@@ -27,16 +28,16 @@ const Index = () => {
 
     const io = new IntersectionObserver(
       (entries) => {
-        // bierzemy najbardziej “widoczny” element
         const visible = entries
           .filter((e) => e.isIntersecting)
-          .sort((a, b) => (b.intersectionRatio ?? 0) - (a.intersectionRatio ?? 0))[0];
+          .sort(
+            (a, b) => (b.intersectionRatio ?? 0) - (a.intersectionRatio ?? 0)
+          )[0];
 
         if (visible?.target?.id) setActiveId(visible.target.id);
       },
       {
         threshold: [0.25, 0.4, 0.55, 0.7],
-        // lekko przesuwamy “aktywny obszar” ku górze, żeby działało naturalnie
         rootMargin: "-10% 0px -55% 0px",
       }
     );
@@ -47,14 +48,15 @@ const Index = () => {
 
   const nextId = useMemo(() => {
     const idx = order.indexOf(activeId);
-    if (idx === -1) return "hero";
+    if (idx === -1) return "cta";
     return order[Math.min(idx + 1, order.length - 1)];
   }, [activeId, order]);
 
-  const showArrow = activeId !== "cta";
+  // strzałka znika dopiero na końcu
+  const showArrow = activeId !== "footer";
 
   const scrollNext = () => {
-    const id = activeId === "top" ? "hero" : nextId;
+    const id = activeId === "top" ? "cta" : nextId;
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
@@ -64,31 +66,38 @@ const Index = () => {
       <Navbar />
 
       <main>
-        {/* sentinel dla hero start */}
+        {/* sentinel start */}
         <div id="top" />
 
         <ComingSoonBanner />
 
+        {/* 1) CTA (beta testy) - ma być pierwsze po hero */}
+        <div id="cta" />
+        <CTASection />
+
+        {/* 2) HERO */}
         <div id="hero" />
         <HeroSection />
 
+        {/* 3) PROBLEM */}
         <div id="problem" />
         <ProblemSection />
 
+        {/* 4) HOW */}
         <div id="how" />
         <HowItWorksSection />
 
+        {/* 5) RECOMMEND */}
         <div id="recommend" />
         <RecommendationSection />
 
-        {/* CTA na końcu */}
-        <div id="cta" />
-        <CTASection />
+        {/* sentinel koniec */}
+        <div id="footer" />
       </main>
 
       <Footer />
 
-      {/* GLOBALNA STRZAŁKA: zawsze w dole ekranu (PC/telefon) */}
+      {/* GLOBALNA STRZAŁKA */}
       {showArrow && (
         <button
           type="button"
@@ -96,7 +105,6 @@ const Index = () => {
           aria-label="Przewiń do kolejnej sekcji"
           className="fixed left-1/2 -translate-x-1/2 z-[9999] transition-transform hover:scale-125 active:scale-110 opacity-95"
           style={{
-            // zawsze widoczna, nigdy nie “wpadnie” pod kadr
             bottom: "clamp(20px, 4.2vh, 56px)",
           }}
         >
