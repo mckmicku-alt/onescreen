@@ -53,56 +53,48 @@ const CTASection = () => {
   }
 
   return (
-    <section className="py-16">
-      <div className="mx-auto max-w-3xl px-4 text-center">
-        {/* Filmowy nagłówek */}
-        <h2 className="text-5xl md:text-6xl font-extrabold uppercase tracking-tight text-white">
-          Premiera wkrótce.
-        </h2>
+    <section id="cta" className="py-20">
+      <div className="mx-auto max-w-3xl px-4">
+        {/* Bańka z półprzezroczystym tłem */}
+        <div className="rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 p-10 shadow-lg">
+          <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
+            Premiera wkrótce.
+          </h2>
+          <p className="mt-4 text-2xl md:text-3xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-pink-500 to-red-500">
+            Dołącz do pierwszych 1000 użytkowników.
+          </p>
+          <p className="mt-2 text-lg text-muted-foreground">
+            Zostaw e‑mail, jeśli jesteś zainteresowany!
+          </p>
 
-        {/* Neonowy gradient dopasowany do strony */}
-        <p className="mt-3 text-3xl md:text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-pink-500 to-red-500">
-          Dołącz do pierwszych 1000 użytkowników.
-        </p>
+          <div className="mt-8 flex flex-col items-center gap-4">
+            <div className="w-full max-w-xl flex flex-col sm:flex-row gap-3">
+              <Input
+                value={email}
+                onChange={(ev) => setEmail(ev.target.value)}
+                placeholder="twój@email.com"
+                className="bg-muted/50 border-border focus:border-primary h-12 rounded-xl"
+                type="email"
+              />
+              <Button onClick={handleJoin} disabled={loading} className="h-12 rounded-xl">
+                {loading ? "Wysyłam..." : "Dołączam"}
+              </Button>
+            </div>
 
-        {/* Tekst zapraszający do zapisu */}
-        <p className="mt-2 text-lg md:text-xl text-muted-foreground">
-          Zostaw e‑mail, jeśli jesteś zainteresowany!
-        </p>
-
-        <div className="mt-8 flex flex-col items-center gap-4">
-          <div className="w-full max-w-xl flex flex-col sm:flex-row gap-3">
-            <Input
-              value={email}
-              onChange={(ev) => setEmail(ev.target.value)}
-              placeholder="twój@email.com"
-              className="bg-muted/50 border-border focus:border-primary h-12 rounded-xl"
-              type="email"
-            />
-            <Button onClick={handleJoin} disabled={loading} className="h-12 rounded-xl">
-              {loading ? "Wysyłam..." : "Dołączam"}
-            </Button>
+            <label className="flex items-start gap-3 text-sm text-muted-foreground max-w-xl text-left">
+              <input
+                type="checkbox"
+                checked={accepted}
+                onChange={(ev) => setAccepted(ev.target.checked)}
+                className="mt-1"
+              />
+              <span>
+                Akceptuję{" "}
+                <a className="underline" href="/regulamin">Regulamin</a> oraz{" "}
+                <a className="underline" href="/polityka-prywatnosci">Politykę prywatności</a>.
+              </span>
+            </label>
           </div>
-
-          <label className="flex items-start gap-3 text-sm text-muted-foreground max-w-xl text-left">
-            <input
-              type="checkbox"
-              checked={accepted}
-              onChange={(ev) => setAccepted(ev.target.checked)}
-              className="mt-1"
-            />
-            <span>
-              Akceptuję{" "}
-              <a className="underline" href="/regulamin">
-                Regulamin
-              </a>{" "}
-              oraz{" "}
-              <a className="underline" href="/polityka-prywatnosci">
-                Politykę prywatności
-              </a>
-              .
-            </span>
-          </label>
         </div>
       </div>
     </section>
