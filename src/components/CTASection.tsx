@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -11,7 +10,9 @@ const CTASection = () => {
   const [loading, setLoading] = useState(false);
 
   async function handleJoin() {
-    if (!email) {
+    const e = email.trim();
+
+    if (!e) {
       toast.error("Wpisz poprawny adres e-mail.");
       return;
     }
@@ -26,10 +27,10 @@ const CTASection = () => {
       const r = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, accepted: true }),
+        body: JSON.stringify({ email: e, accepted: true }),
       });
 
-      const data = await r.json().catch(() => null);
+      const data = await r.json().catch(() => ({} as any));
 
       if (r.ok) {
         toast.success("Gotowe! Jesteś na liście. Damy znać przed startem 🚀");
@@ -38,7 +39,7 @@ const CTASection = () => {
         return;
       }
 
-      // duplikat (409)
+      // 409 = już na liście
       if (r.status === 409) {
         toast.info("Ten adres e-mail jest już na naszej liście ✅");
         return;
@@ -55,14 +56,7 @@ const CTASection = () => {
   return (
     <section className="py-16">
       <div className="mx-auto max-w-3xl px-4 text-center">
-        <motion.h2
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-4xl md:text-5xl font-bold"
-        >
-          Premiera wkrótce.
-        </motion.h2>
-
+        <h2 className="text-4xl md:text-5xl font-bold">Premiera wkrótce.</h2>
         <p className="mt-3 text-muted-foreground text-lg">
           Dołącz do pierwszych użytkowników. Zostaw e-mail, a damy znać jako pierwsi.
         </p>
@@ -71,7 +65,7 @@ const CTASection = () => {
           <div className="w-full max-w-xl flex flex-col sm:flex-row gap-3">
             <Input
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(ev) => setEmail(ev.target.value)}
               placeholder="twój@email.com"
               className="bg-muted/50 border-border focus:border-primary h-12 rounded-xl"
               type="email"
@@ -85,7 +79,7 @@ const CTASection = () => {
             <input
               type="checkbox"
               checked={accepted}
-              onChange={(e) => setAccepted(e.target.checked)}
+              onChange={(ev) => setAccepted(ev.target.checked)}
               className="mt-1"
             />
             <span>
